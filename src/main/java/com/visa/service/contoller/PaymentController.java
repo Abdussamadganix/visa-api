@@ -43,8 +43,8 @@ public class PaymentController {
 
   @RequestMapping(params = "uniqueKey", produces = "application/json")
   public ResponseEntity<VisaApiResponse> getPayment(
-      @RequestParam String publicKey) throws VisaApiException {
-    SuccessResponse successResponse = paymentService.fetchByUniqueKey(publicKey);
+      @RequestParam String uniqueKey) throws VisaApiException {
+    SuccessResponse successResponse = paymentService.fetchByUniqueKey(uniqueKey);
     return new ResponseEntity<>(successResponse, HttpStatus.OK);
   }
 
