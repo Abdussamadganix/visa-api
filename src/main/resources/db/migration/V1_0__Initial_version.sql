@@ -9,7 +9,7 @@ CREATE TABLE `log` (
   `response_code` varchar(4) DEFAULT NULL COMMENT 'HTTP status code of response',
   `status` varchar(16) DEFAULT NULL COMMENT 'HTTP status of response',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When log was created',
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last time log was updated',
+  `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Last time log was updated',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -27,7 +27,7 @@ CREATE TABLE `user` (
   `password` varchar(255) NOT NULL DEFAULT '' COMMENT 'Password of user',
   `status` varchar(16) NOT NULL DEFAULT '' COMMENT 'Status of user',
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When the user was created',
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last time user was udpated',
+  `updated_at` timestamp NULL DEFAULT NULL  COMMENT 'Last time user was udpated',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNQ-user-unique_key` (`unique_key`),
   UNIQUE KEY `UNQ-user-email` (`email`)
@@ -42,7 +42,7 @@ CREATE TABLE `token` (
   `user` varchar(32) NOT NULL DEFAULT '' COMMENT 'Unique key of user',
   `token` varchar(64) NOT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When the token was created',
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL ,
   `expires_at` timestamp NULL DEFAULT NULL COMMENT 'When the token expires',
   `status` varchar(16) DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -89,11 +89,6 @@ CREATE TABLE `payment` (
   `velocity_limit_indicator` varchar(50) NOT NULL COMMENT 'auth id response of payment',
   `status` varchar(16) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When the payment was created',
-  `updated_at` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last time payment was updated',
+  `updated_at` timestamp NULL DEFAULT NULL  COMMENT 'Last time payment was updated',
   PRIMARY KEY (`id`)
  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-/*
-  private String velocityLimitIndicator;
-
-*/

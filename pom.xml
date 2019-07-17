@@ -86,10 +86,10 @@
       <artifactId>commons-codec</artifactId>
       <version>1.9</version>
     </dependency>
-    <dependency>
-      <groupId>org.flywaydb</groupId>
-      <artifactId>flyway-core</artifactId>
-    </dependency>
+    <!--<dependency>-->
+    <!--<groupId>org.flywaydb</groupId>-->
+    <!--<artifactId>flyway-core</artifactId>-->
+    <!--</dependency>-->
     <dependency>
       <groupId>com.googlecode.libphonenumber</groupId>
       <artifactId>libphonenumber</artifactId>
