@@ -12,11 +12,13 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+import javax.persistence.Table;
 
 /**
  * @author Abdussamad
  */
 @Entity
+@Table(name = "payment")
 public class Payment {
 
   private Integer id;
