@@ -87,6 +87,7 @@ CREATE TABLE `payment` (
   `enc_agent_name` varchar(50) DEFAULT NULL COMMENT 'auth id response of payment',
   `agent_city` varchar(50) DEFAULT NULL COMMENT 'auth id response of payment',
   `velocity_limit_indicator` varchar(50) DEFAULT NULL COMMENT 'auth id response of payment',
+  `decimal_postion_indicator` varchar(50) DEFAULT NULL COMMENT 'auth id response of payment',
   `status` varchar(16) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When the payment was created',
   `updated_at` timestamp NULL DEFAULT NULL  COMMENT 'Last time payment was updated',

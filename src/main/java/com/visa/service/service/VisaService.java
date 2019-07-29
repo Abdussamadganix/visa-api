@@ -163,7 +163,10 @@ public class VisaService {
   private SuccessResponse createResponseDataForResolveAlias(ResolveAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null) {
-      data.put("resolveAlias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("resolveAlias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     } else {
       data.put("resolveAlias", ApiResolveAliasResponse.formResolveAliasResponse(response));
@@ -174,7 +177,10 @@ public class VisaService {
   private SuccessResponse createResponseDataForCreateAlias(CreateAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null || response.getMessage() != null) {
-      data.put("alias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("alias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     }
     data.put("alias", ApiCreateAliasResponse.fromCreateAliasResponse(response));
@@ -184,7 +190,10 @@ public class VisaService {
   private SuccessResponse createResponseDataForDeleteAlias(DeleteAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null || response.getMessage() != null) {
-      data.put("alias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("alias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     }
     data.put("alias", ApiDeleteAliasResponse.fromDeleteAliasResponse(response));
@@ -194,7 +203,10 @@ public class VisaService {
   private SuccessResponse createResponseDataForGetAlias(GetAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null || response.getMessage() != null) {
-      data.put("alias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("alias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     }
     data.put("alias", response);
@@ -205,7 +217,10 @@ public class VisaService {
       CreateMerchantAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null || response.getMessage() != null) {
-      data.put("alias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("alias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     }
     data.put("merchantAlias", response);
@@ -216,7 +231,10 @@ public class VisaService {
       UpdateMerchantAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null || response.getMessage() != null) {
-      data.put("alias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("alias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     }
     data.put("merchantAlias", response);
@@ -227,7 +245,10 @@ public class VisaService {
       DeleteMerchantAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null || response.getMessage() != null) {
-      data.put("alias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("alias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     }
     data.put("merchantAlias", response);
@@ -238,7 +259,10 @@ public class VisaService {
       GetMerchantAliasResponse response) {
     Map<String, Object> data = new HashMap<>();
     if (response.getResponseStatus() != null || response.getMessage() != null) {
-      data.put("alias", FailedResponse.fromResponseStatus(response.getResponseStatus()));
+      data.put("alias", (response.getResponseStatus() != null)
+          ? FailedResponse.fromResponseStatus(response.getResponseStatus().getMessage(),
+          response.getResponseStatus().getReason())
+          : FailedResponse.fromResponseStatus(response.getMessage(), response.getReason()));
       return buildFailedResponse(data);
     }
     data.put("merchantAlias", response);

@@ -21,5 +21,7 @@ public class VisaConfiguration {
   private String baseUrl;
   private String username;
   private String password;
+  private String keyStorePassword;
+  private String keyStorePath;
 
 }

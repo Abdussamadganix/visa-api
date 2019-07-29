@@ -19,4 +19,5 @@ public class DeleteAliasResponse {
   private String guid;
   private String message;
   private ResponseStatus responseStatus;
+  private String reason;
 }

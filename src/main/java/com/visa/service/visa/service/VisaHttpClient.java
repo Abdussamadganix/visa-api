@@ -1,6 +1,7 @@
 package com.visa.service.visa.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.threetenbp.ThreeTenModule;
 import com.sun.istack.Nullable;
 import com.visa.service.exception.BadRequestException;
 import com.visa.service.exception.ProcessingException;
@@ -10,10 +11,22 @@ import com.visa.service.util.RestTemplateErrorHandler;
 import com.visa.service.util.RestUtil;
 import com.visa.service.util.SecurityUtil;
 import com.visa.service.visa.configuration.VisaConfiguration;
+import com.visa.service.visa.util.CustomInstantDeserializer;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URI;
+import java.security.KeyStore;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import org.apache.http.HttpHost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.ssl.SSLContexts;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.web.client.RestTemplateBuilder;
@@ -22,10 +35,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.client.BufferingClientHttpRequestFactory;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.AbstractJackson2HttpMessageConverter;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.threeten.bp.Instant;
+import org.threeten.bp.OffsetDateTime;
+import org.threeten.bp.ZonedDateTime;
 
 /**
  * @author Abdussamad
@@ -50,9 +70,12 @@ public class VisaHttpClient {
     this.logRepository = logRepository;
     this.mapper = objectMapper;
     this.configuration = configuration;
-    this.restTemplate = restTemplateBuilder
-        .errorHandler(restTemplateErrorHandler)
-        .build();
+    this.restTemplate = getRestTemplateForMutualAuth();
+    restTemplate.setErrorHandler(restTemplateErrorHandler);
+
+//    this.restTemplate = restTemplateBuilder
+//        .errorHandler(restTemplateErrorHandler)
+//        .build();
   }
 
   public <T> T get(String requestPath, Class<T> responseClass, Map<String, String> headers) {
@@ -92,8 +115,6 @@ public class VisaHttpClient {
       if (headers != null) {
         headers.forEach(requestHeaders::set);
       }
-//      HttpHeaders headersChecl = new HttpHeaders();
-//      headers.add("Authorization", SecurityUtil.base64Converter(configuration.getUsername() + ":" + configuration.getPassword()));
       HttpEntity<?> requestEntity = new HttpEntity<>(requestObject, requestHeaders);
       ResponseEntity<Object> responseEntity =
           restTemplate.exchange(url, HttpMethod.POST, requestEntity, Object.class, requestObject);
@@ -136,4 +157,55 @@ public class VisaHttpClient {
     }
   }
 
+
+  protected RestTemplate getRestTemplateForMutualAuth() {
+    try {
+      KeyStore keystore = KeyStore.getInstance(KeyStore.getDefaultType());
+      FileInputStream keystoreInputStream = new FileInputStream(configuration.getKeyStorePath());
+      keystore.load(keystoreInputStream, configuration.getKeyStorePassword().toCharArray());
+      keystoreInputStream.close();
+
+      SSLContext sslcontext = SSLContexts.custom().useProtocol("TLS")
+          .loadKeyMaterial(keystore, configuration.getKeyStorePassword().toCharArray())
+          .loadTrustMaterial(new File(configuration.getKeyStorePath()),
+              configuration.getKeyStorePassword().toCharArray())
+          .build();
+
+      HostnameVerifier hostnameverifier = null;
+      SSLConnectionSocketFactory sslSocketFactory = new SSLConnectionSocketFactory(sslcontext, null,
+          null,
+          hostnameverifier);
+      CloseableHttpClient httpClient =
+//          proxyHostName != null && proxyHostName != "" && proxyPortNumber != 0
+//              ? HttpClients.custom().setSSLSocketFactory(sslSocketFactory)
+//              .setProxy(new HttpHost(proxyHostName, proxyPortNumber)).build()
+//              :
+          HttpClients.custom().setSSLSocketFactory(sslSocketFactory).build();
+
+      HttpsURLConnection.setDefaultSSLSocketFactory(sslcontext.getSocketFactory());
+      HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
+
+      requestFactory.setHttpClient(httpClient);
+      RestTemplate restTemplate = new RestTemplate(requestFactory);
+
+      for (HttpMessageConverter converter : restTemplate.getMessageConverters()) {
+        if (converter instanceof AbstractJackson2HttpMessageConverter) {
+          ObjectMapper mapper = ((AbstractJackson2HttpMessageConverter) converter)
+              .getObjectMapper();
+          ThreeTenModule module = new ThreeTenModule();
+          module.addDeserializer(Instant.class, CustomInstantDeserializer.INSTANT);
+          module.addDeserializer(OffsetDateTime.class, CustomInstantDeserializer.OFFSET_DATE_TIME);
+          module.addDeserializer(ZonedDateTime.class, CustomInstantDeserializer.ZONED_DATE_TIME);
+          mapper.registerModule(module);
+        }
+      }
+      restTemplate.setRequestFactory(
+          new BufferingClientHttpRequestFactory(restTemplate.getRequestFactory()));
+      return restTemplate;
+
+    } catch (Exception e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
 }

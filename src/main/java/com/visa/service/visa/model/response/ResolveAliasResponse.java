@@ -24,4 +24,6 @@ public class ResolveAliasResponse {
   private String country;
   private String postalCode;
   private ResponseStatus responseStatus;
+  private String message;
+  private String reason;
 }

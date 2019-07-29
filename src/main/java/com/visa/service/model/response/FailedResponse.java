@@ -20,10 +20,10 @@ public class FailedResponse {
   private String message;
   private String reason;
 
-  public static FailedResponse fromResponseStatus(ResponseStatus responseStatus) {
+  public static FailedResponse fromResponseStatus(String message, String reason) {
     return FailedResponse.builder()
-        .message(responseStatus.getMessage())
-        .reason(responseStatus.getReason())
+        .message(message)
+        .reason(reason)
         .build();
   }
 
