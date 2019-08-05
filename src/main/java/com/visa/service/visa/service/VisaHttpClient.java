@@ -84,8 +84,13 @@ public class VisaHttpClient {
     headers.forEach(requestHeaders::set);
     LOGGER.info("Headers " + headers);
     try {
-      URI uri = new URI(requestPath);
-      return restTemplate.getForObject(uri, responseClass);
+//      URI uri = new URI(requestPath);
+//      return restTemplate.getForObject(uri, responseClass);
+      HttpEntity<?> requestEntity = new HttpEntity<>("", requestHeaders);
+      ResponseEntity<String> responseEntity =
+          restTemplate.exchange(requestPath, HttpMethod.GET, requestEntity, String.class);
+      return objectMapper
+          .readValue(responseEntity.getBody(), responseClass);
     } catch (Exception e) {
       LOGGER.error("Request failed", e);
       throw new ProcessingException(e.getMessage());

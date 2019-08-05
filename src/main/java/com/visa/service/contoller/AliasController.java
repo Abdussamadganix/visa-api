@@ -1,6 +1,7 @@
 package com.visa.service.contoller;
 
 import com.visa.service.model.request.ApiCreateAliasRequest;
+import com.visa.service.model.request.ApiCreateMerchantAliasRequest;
 import com.visa.service.model.request.ApiDeleteAliasRequest;
 import com.visa.service.model.request.ApiGetAliasRequest;
 import com.visa.service.model.request.ApiResolveAliasRequest;
@@ -91,7 +92,7 @@ public class AliasController {
   @RequestMapping(path = "/merchants/create", method = RequestMethod.POST,
       produces = "application/json")
   public ResponseEntity<VisaApiResponse> createMerchantAlias(
-      @Valid @RequestBody CreateMerchantAliasRequest request, BindingResult bindingResult)
+      @Valid @RequestBody ApiCreateMerchantAliasRequest request, BindingResult bindingResult)
       throws Exception {
     InputValidator.validate(bindingResult);
     SuccessResponse response = visaService.createMerchantAlias(request);

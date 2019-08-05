@@ -3,6 +3,7 @@ package com.visa.service.service;
 import com.visa.service.exception.BadRequestException;
 import com.visa.service.model.constant.Status;
 import com.visa.service.model.request.ApiCreateAliasRequest;
+import com.visa.service.model.request.ApiCreateMerchantAliasRequest;
 import com.visa.service.model.request.ApiDeleteAliasRequest;
 import com.visa.service.model.request.ApiGetAliasRequest;
 import com.visa.service.model.request.ApiResolveAliasRequest;
@@ -64,6 +65,9 @@ public class VisaService {
   private final String CREATE_ALIAS_PATH = "/visaaliasdirectory/v1/manage/createalias";
   private final String UPDATE_ALIAS_PATH = "/visaaliasdirectory/v1/manage/updatealias";
   private final String CREATE_MERCHANT_ALIAS__PATH = "/visaaliasdirectory/v1/managemerchant/createalias";
+  private final String UPDATE_MERCHANT_ALIAS_PATH = "/visaaliasdirectory/v1/managemerchant/updatealias";
+  private final String DELETE_MERCHANT_ALIAS_PATH = "/visaaliasdirectory/v1/managemerchant/deletealias";
+  private final String GET_MERCHANT_ALIAS_PATH = "/visaaliasdirectory/v1/managemerchant";
 
   private final Logger LOGGER = LoggerFactory.getLogger(VisaService.class);
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(VisaService.class);
@@ -125,9 +129,11 @@ public class VisaService {
   }
 
   public SuccessResponse createMerchantAlias(
-      CreateMerchantAliasRequest createMerchantAliasRequest) {
+      ApiCreateMerchantAliasRequest apiCreateMerchantAliasRequest) {
+    CreateMerchantAliasRequest createMerchantAliasRequest = apiCreateMerchantAliasRequest
+        .toCreateMerchantAliasRequest();
     CreateMerchantAliasResponse response = visaHttpClient
-        .post(configuration.getBaseUrl() + UPDATE_ALIAS_PATH, createMerchantAliasRequest,
+        .post(configuration.getBaseUrl() + CREATE_MERCHANT_ALIAS__PATH, createMerchantAliasRequest,
             CreateMerchantAliasResponse.class, getHeaders());
     return createResponseDataForCreateMerchantAliasResponse(response);
   }
@@ -135,7 +141,7 @@ public class VisaService {
   public SuccessResponse updateMerchantAlias(
       UpdateMerchantAliasRequest updateMerchantAliasRequest) {
     UpdateMerchantAliasResponse response = visaHttpClient
-        .post(configuration.getBaseUrl() + UPDATE_ALIAS_PATH, updateMerchantAliasRequest,
+        .post(configuration.getBaseUrl() + UPDATE_MERCHANT_ALIAS_PATH, updateMerchantAliasRequest,
             UpdateMerchantAliasResponse.class, getHeaders());
     return createResponseDataForUpdateMerchantAliasResponse(response);
   }
@@ -143,14 +149,17 @@ public class VisaService {
   public SuccessResponse deleteMerchantAlias(
       DeleteMerchantAliasRequest deleteMerchantAliasRequest) {
     DeleteMerchantAliasResponse response = visaHttpClient
-        .post(configuration.getBaseUrl() + UPDATE_ALIAS_PATH, deleteMerchantAliasRequest,
+        .post(configuration.getBaseUrl() + DELETE_MERCHANT_ALIAS_PATH, deleteMerchantAliasRequest,
             DeleteMerchantAliasResponse.class, getHeaders());
     return createResponseDataForDeleteMerchantAliasResponse(response);
   }
 
   public SuccessResponse getMerchantAlias(GetMerchantAliasRequest getMerchantAliasRequest) {
     GetMerchantAliasResponse response = visaHttpClient
-        .post(configuration.getBaseUrl() + UPDATE_ALIAS_PATH, getMerchantAliasRequest,
+        .get(configuration.getBaseUrl() + GET_MERCHANT_ALIAS_PATH
+                + "?merchantaliasid=" + getMerchantAliasRequest.getMerchantAliasId()
+                + ((getMerchantAliasRequest.getType() != null) ? "&type=" + getMerchantAliasRequest
+                .getType() : ""),
             GetMerchantAliasResponse.class, getHeaders());
     return createResponseDataForGetMerchantAliasResponse(response);
   }
