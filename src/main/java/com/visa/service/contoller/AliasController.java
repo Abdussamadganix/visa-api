@@ -6,6 +6,7 @@ import com.visa.service.model.request.ApiDeleteAliasRequest;
 import com.visa.service.model.request.ApiGetAliasRequest;
 import com.visa.service.model.request.ApiResolveAliasRequest;
 import com.visa.service.model.request.ApiUpdateAliasRequest;
+import com.visa.service.model.request.ApiUpdateMerchantAliasRequest;
 import com.visa.service.model.response.SuccessResponse;
 import com.visa.service.model.response.VisaApiResponse;
 import com.visa.service.service.VisaService;
@@ -102,7 +103,7 @@ public class AliasController {
   @RequestMapping(path = "/merchants/update", method = RequestMethod.POST,
       produces = "application/json")
   public ResponseEntity<VisaApiResponse> updateMerchantAlias(
-      @Valid @RequestBody UpdateMerchantAliasRequest request, BindingResult bindingResult)
+      @Valid @RequestBody ApiUpdateMerchantAliasRequest request, BindingResult bindingResult)
       throws Exception {
     InputValidator.validate(bindingResult);
     SuccessResponse response = visaService.updateMerchantAlias(request);

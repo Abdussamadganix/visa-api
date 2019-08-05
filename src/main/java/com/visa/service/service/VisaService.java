@@ -8,6 +8,7 @@ import com.visa.service.model.request.ApiDeleteAliasRequest;
 import com.visa.service.model.request.ApiGetAliasRequest;
 import com.visa.service.model.request.ApiResolveAliasRequest;
 import com.visa.service.model.request.ApiUpdateAliasRequest;
+import com.visa.service.model.request.ApiUpdateMerchantAliasRequest;
 import com.visa.service.model.response.ApiCreateAliasResponse;
 import com.visa.service.model.response.ApiDeleteAliasResponse;
 import com.visa.service.model.response.ApiResolveAliasResponse;
@@ -139,7 +140,9 @@ public class VisaService {
   }
 
   public SuccessResponse updateMerchantAlias(
-      UpdateMerchantAliasRequest updateMerchantAliasRequest) {
+      ApiUpdateMerchantAliasRequest apiUpdateMerchantAliasRequest) {
+    UpdateMerchantAliasRequest updateMerchantAliasRequest = apiUpdateMerchantAliasRequest
+        .toUpdateMerchantAliasRequest();
     UpdateMerchantAliasResponse response = visaHttpClient
         .post(configuration.getBaseUrl() + UPDATE_MERCHANT_ALIAS_PATH, updateMerchantAliasRequest,
             UpdateMerchantAliasResponse.class, getHeaders());
