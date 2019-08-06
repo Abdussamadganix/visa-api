@@ -2,6 +2,7 @@ package com.visa.service.model.request;
 
 import com.visa.service.model.constant.InitiationMethod;
 import com.visa.service.model.constant.PointOfInitiationMethod;
+import com.visa.service.model.entity.MerchantAlias;
 import com.visa.service.visa.model.request.CreateMerchantAliasRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -30,6 +31,7 @@ public class ApiCreateMerchantAliasRequest {
   private String recipientName;
   private String city;
   private String country;
+  private String terminalId;
 
   public CreateMerchantAliasRequest toCreateMerchantAliasRequest() {
     return CreateMerchantAliasRequest.builder()
@@ -48,5 +50,24 @@ public class ApiCreateMerchantAliasRequest {
         .city(city)
         .country(country)
         .build();
+  }
+
+  public MerchantAlias toMerchantAlias() {
+    MerchantAlias merchantAlias = new MerchantAlias();
+    merchantAlias.setAliasId(aliasId);
+    merchantAlias.setIsAgentAlias(isAgentAlias);
+    merchantAlias.setMerchantId(merchantId);
+    merchantAlias.setMerchantCategoryCode(merchantCategoryCode);
+    merchantAlias.setPayloadFormatIndicator(payloadFormatIndicator);
+    merchantAlias.setPointOfInitiationMethod(String.valueOf(pointOfInitiationMethod));
+    merchantAlias.setTransactionCurrencyCode(transactionCurrencyCode);
+    merchantAlias.setTipConvenienceFeeIndicator(tipConvenienceFeeIndicator);
+    merchantAlias.setConvenienceFeeAmount(convenienceFeeAmount);
+    merchantAlias.setConvenienceFeePercentage(convenienceFeePercentage);
+    merchantAlias.setRecipientName(recipientName);
+    merchantAlias.setCity(city);
+    merchantAlias.setCountry(country);
+    merchantAlias.setTerminalId(terminalId);
+    return merchantAlias;
   }
 }

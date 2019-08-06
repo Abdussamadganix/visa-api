@@ -2,6 +2,7 @@ package com.visa.service.service;
 
 import com.visa.service.exception.BadRequestException;
 import com.visa.service.model.constant.Status;
+import com.visa.service.model.entity.MerchantAlias;
 import com.visa.service.model.request.ApiCreateAliasRequest;
 import com.visa.service.model.request.ApiCreateMerchantAliasRequest;
 import com.visa.service.model.request.ApiDeleteAliasRequest;
@@ -62,6 +63,7 @@ public class VisaService {
   private final VisaConfiguration configuration;
   private final VisaHttpClient visaHttpClient;
   private final ApiClient apiClient;
+  private final MerchantAliasService merchantAliasService;
   private final String ALIAS_RESOLVE_PATH = "/visaaliasdirectory/v1/resolve";
   private final String CREATE_ALIAS_PATH = "/visaaliasdirectory/v1/manage/createalias";
   private final String UPDATE_ALIAS_PATH = "/visaaliasdirectory/v1/manage/updatealias";
@@ -75,13 +77,15 @@ public class VisaService {
 
   @Autowired
   public VisaService(VisaConfiguration configuration, VisaHttpClient visaHttpClient,
-      ApiClient apiClient) {
+      ApiClient apiClient, MerchantAliasService merchantAliasService) {
     Assert.notNull(configuration);
     Assert.notNull(visaHttpClient);
     Assert.notNull(apiClient);
+    Assert.notNull(merchantAliasService);
     this.configuration = configuration;
     this.visaHttpClient = visaHttpClient;
     this.apiClient = apiClient;
+    this.merchantAliasService = merchantAliasService;
   }
 
   public SuccessResponse resolveAlias(ApiResolveAliasRequest apiResolveAliasRequest) {
@@ -133,9 +137,19 @@ public class VisaService {
       ApiCreateMerchantAliasRequest apiCreateMerchantAliasRequest) {
     CreateMerchantAliasRequest createMerchantAliasRequest = apiCreateMerchantAliasRequest
         .toCreateMerchantAliasRequest();
+    MerchantAlias merchantAlias = merchantAliasService
+        .createMerchantAlias(apiCreateMerchantAliasRequest.toMerchantAlias());
     CreateMerchantAliasResponse response = visaHttpClient
         .post(configuration.getBaseUrl() + CREATE_MERCHANT_ALIAS__PATH, createMerchantAliasRequest,
             CreateMerchantAliasResponse.class, getHeaders());
+    if (response.getResponseStatus() != null || response.getMessage() != null) {
+      merchantAlias.setCreateStatus(Status.FAILED);
+      merchantAlias.setErrorReason((response.getMessage() != null) ? response.getMessage()
+          : response.getResponseStatus().getMessage());
+    } else {
+      merchantAlias.setCreateStatus(Status.SUCCESSFUL);
+    }
+    merchantAliasService.updateMerchantAlias(merchantAlias, merchantAlias);
     return createResponseDataForCreateMerchantAliasResponse(response);
   }
 
@@ -146,6 +160,10 @@ public class VisaService {
     UpdateMerchantAliasResponse response = visaHttpClient
         .post(configuration.getBaseUrl() + UPDATE_MERCHANT_ALIAS_PATH, updateMerchantAliasRequest,
             UpdateMerchantAliasResponse.class, getHeaders());
+    MerchantAlias merchantAliasToUpdate = merchantAliasService
+        .fetchByAliasId(apiUpdateMerchantAliasRequest.getAliasId());
+    MerchantAlias updateMerchantAlias = apiUpdateMerchantAliasRequest.toMerchantAlias();
+    merchantAliasService.updateMerchantAlias(merchantAliasToUpdate, updateMerchantAlias);
     return createResponseDataForUpdateMerchantAliasResponse(response);
   }
 

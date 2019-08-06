@@ -1,5 +1,6 @@
 package com.visa.service.visa.model.request;
 
+import com.visa.service.model.entity.MerchantAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
