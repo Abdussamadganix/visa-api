@@ -1,5 +1,6 @@
 package com.visa.service.service.facade;
 
+import com.visa.service.model.constant.Status;
 import com.visa.service.model.response.SuccessResponse;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +13,7 @@ public abstract class RequestFacade {
 
   SuccessResponse buildSuccessResponse(Map<String, Object> data) {
     return SuccessResponse.builder()
+        .status(Status.SUCCESS)
         .data(data)
         .build();
   }
