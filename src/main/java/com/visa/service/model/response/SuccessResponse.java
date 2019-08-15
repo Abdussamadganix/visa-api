@@ -18,6 +18,6 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = false)
 public class SuccessResponse extends VisaApiResponse {
 
-  private Status status;
+  private Status status = Status.SUCCESS;
   private Map<String, Object> data;
 }
