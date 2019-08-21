@@ -3,9 +3,12 @@ package com.visa.service.service;
 import com.visa.service.exception.ConflictException;
 import com.visa.service.exception.NotFoundException;
 import com.visa.service.model.entity.MerchantAlias;
+import com.visa.service.model.request.MerchantSearchRequest;
+import com.visa.service.model.request.UserSearchRequest;
 import com.visa.service.repository.MerchantAliasRepository;
 import com.visa.service.util.VisaBeanUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 /**
@@ -43,10 +46,16 @@ public class MerchantAliasService {
     return merchantAlias;
   }
 
+  public Page<MerchantAlias> findAllMerchantAliases(MerchantSearchRequest request) {
+    return merchantAliasRepository
+        .findAll(request.getBooleanExpression(), request.getPaginationQuery());
+  }
+
   private void verifyAliasIdIsUnique(String aliasId) throws ConflictException {
     MerchantAlias savedMerchantAlias = merchantAliasRepository.findOneByAliasId(aliasId);
     if (savedMerchantAlias != null) {
       throw new ConflictException("Merchant Alias already exist");
     }
   }
+
 }

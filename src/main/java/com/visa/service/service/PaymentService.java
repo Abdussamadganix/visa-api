@@ -1,8 +1,11 @@
 package com.visa.service.service;
 
 import com.visa.service.exception.NotFoundException;
+import com.visa.service.model.entity.MerchantAlias;
 import com.visa.service.model.entity.Payment;
+import com.visa.service.model.request.MerchantSearchRequest;
 import com.visa.service.model.request.PaymentRequest;
+import com.visa.service.model.request.PaymentSearchRequest;
 import com.visa.service.model.response.PaymentResponse;
 import com.visa.service.model.response.SuccessResponse;
 import com.visa.service.repository.PaymentRepository;
@@ -11,6 +14,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 /**
@@ -59,5 +63,9 @@ public class PaymentService {
     payment.setUniqueKey(encodedKey.substring(0, 10));
   }
 
+  public Page<Payment> findAllPayment(PaymentSearchRequest request) {
+    return paymentRepository
+        .findAll(request.getBooleanExpression(), request.getPaginationQuery());
+  }
 
 }

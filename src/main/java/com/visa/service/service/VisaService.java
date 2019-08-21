@@ -3,6 +3,7 @@ package com.visa.service.service;
 import com.visa.service.exception.BadRequestException;
 import com.visa.service.model.constant.Status;
 import com.visa.service.model.entity.MerchantAlias;
+import com.visa.service.model.entity.User;
 import com.visa.service.model.request.ApiCreateAliasRequest;
 import com.visa.service.model.request.ApiCreateMerchantAliasRequest;
 import com.visa.service.model.request.ApiDeleteAliasRequest;
@@ -10,10 +11,12 @@ import com.visa.service.model.request.ApiGetAliasRequest;
 import com.visa.service.model.request.ApiResolveAliasRequest;
 import com.visa.service.model.request.ApiUpdateAliasRequest;
 import com.visa.service.model.request.ApiUpdateMerchantAliasRequest;
+import com.visa.service.model.request.UserSearchRequest;
 import com.visa.service.model.response.ApiCreateAliasResponse;
 import com.visa.service.model.response.ApiDeleteAliasResponse;
 import com.visa.service.model.response.ApiResolveAliasResponse;
 import com.visa.service.model.response.FailedResponse;
+import com.visa.service.model.response.MerchantAliasResponse;
 import com.visa.service.model.response.SuccessResponse;
 import com.visa.service.util.SecurityUtil;
 import com.visa.service.visa.configuration.VisaConfiguration;
@@ -45,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
@@ -184,6 +188,7 @@ public class VisaService {
             GetMerchantAliasResponse.class, getHeaders());
     return createResponseDataForGetMerchantAliasResponse(response);
   }
+
 
   public void updateTransactionUsingCallbackNotitification(
       ReceiveMerchantPayment receiveMerchantPayment) {
