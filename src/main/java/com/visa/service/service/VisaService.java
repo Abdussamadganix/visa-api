@@ -154,6 +154,7 @@ public class VisaService {
     } else {
       merchantAlias.setCreateStatus(Status.SUCCESSFUL);
       merchantAlias.setStatus(Status.CREATION_SUCCESSFUL);
+      merchantAlias.setErrorReason("SUCCESSFUL");
     }
     merchantAliasService.updateMerchantAlias(merchantAlias, merchantAlias);
     return createResponseDataForCreateMerchantAliasResponse(response);
@@ -177,6 +178,7 @@ public class VisaService {
     } else {
       updateMerchantAlias.setUpdateStatus(Status.SUCCESSFUL);
       updateMerchantAlias.setStatus(Status.UPDATE_SUCCESSFUL);
+      updateMerchantAlias.setErrorReason("SUCCESSFUL");
     }
     merchantAliasService.updateMerchantAlias(merchantAliasToUpdate, updateMerchantAlias);
     return createResponseDataForUpdateMerchantAliasResponse(response);
@@ -198,6 +200,7 @@ public class VisaService {
     } else {
       updateMerchantAlias.setDeleteStatus(Status.SUCCESSFUL);
       updateMerchantAlias.setStatus(Status.DELETION_SUCCESSFUL);
+      updateMerchantAlias.setErrorReason("SUCCESSFUL");
     }
     merchantAliasService.updateMerchantAlias(merchantAliasToUpdate, updateMerchantAlias);
     return createResponseDataForDeleteMerchantAliasResponse(response);
