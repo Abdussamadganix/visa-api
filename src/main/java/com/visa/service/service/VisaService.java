@@ -148,10 +148,12 @@ public class VisaService {
             CreateMerchantAliasResponse.class, getHeaders());
     if (response.getResponseStatus() != null || response.getMessage() != null) {
       merchantAlias.setCreateStatus(Status.FAILED);
+      merchantAlias.setStatus(Status.CREATION_FAILED);
       merchantAlias.setErrorReason((response.getMessage() != null) ? response.getMessage()
           : response.getResponseStatus().getMessage());
     } else {
       merchantAlias.setCreateStatus(Status.SUCCESSFUL);
+      merchantAlias.setStatus(Status.CREATION_SUCCESSFUL);
     }
     merchantAliasService.updateMerchantAlias(merchantAlias, merchantAlias);
     return createResponseDataForCreateMerchantAliasResponse(response);
@@ -159,23 +161,45 @@ public class VisaService {
 
   public SuccessResponse updateMerchantAlias(
       ApiUpdateMerchantAliasRequest apiUpdateMerchantAliasRequest) {
+    MerchantAlias merchantAliasToUpdate = merchantAliasService
+        .fetchByAliasId(apiUpdateMerchantAliasRequest.getAliasId());
     UpdateMerchantAliasRequest updateMerchantAliasRequest = apiUpdateMerchantAliasRequest
         .toUpdateMerchantAliasRequest();
     UpdateMerchantAliasResponse response = visaHttpClient
         .post(configuration.getBaseUrl() + UPDATE_MERCHANT_ALIAS_PATH, updateMerchantAliasRequest,
             UpdateMerchantAliasResponse.class, getHeaders());
-    MerchantAlias merchantAliasToUpdate = merchantAliasService
-        .fetchByAliasId(apiUpdateMerchantAliasRequest.getAliasId());
     MerchantAlias updateMerchantAlias = apiUpdateMerchantAliasRequest.toMerchantAlias();
+    if (response.getResponseStatus() != null || response.getMessage() != null) {
+      updateMerchantAlias.setUpdateStatus(Status.FAILED);
+      updateMerchantAlias.setStatus(Status.UPDATE_FAILED);
+      updateMerchantAlias.setErrorReason((response.getMessage() != null) ? response.getMessage()
+          : response.getResponseStatus().getMessage());
+    } else {
+      updateMerchantAlias.setUpdateStatus(Status.SUCCESSFUL);
+      updateMerchantAlias.setStatus(Status.UPDATE_SUCCESSFUL);
+    }
     merchantAliasService.updateMerchantAlias(merchantAliasToUpdate, updateMerchantAlias);
     return createResponseDataForUpdateMerchantAliasResponse(response);
   }
 
   public SuccessResponse deleteMerchantAlias(
       DeleteMerchantAliasRequest deleteMerchantAliasRequest) {
+    MerchantAlias merchantAliasToUpdate = merchantAliasService
+        .fetchByAliasId(deleteMerchantAliasRequest.getAliasId());
     DeleteMerchantAliasResponse response = visaHttpClient
         .post(configuration.getBaseUrl() + DELETE_MERCHANT_ALIAS_PATH, deleteMerchantAliasRequest,
             DeleteMerchantAliasResponse.class, getHeaders());
+    MerchantAlias updateMerchantAlias = deleteMerchantAliasRequest.toMerchantAlias();
+    if (response.getResponseStatus() != null || response.getMessage() != null) {
+      updateMerchantAlias.setDeleteStatus(Status.FAILED);
+      updateMerchantAlias.setStatus(Status.DELETION_FAILED);
+      updateMerchantAlias.setErrorReason((response.getMessage() != null) ? response.getMessage()
+          : response.getResponseStatus().getMessage());
+    } else {
+      updateMerchantAlias.setDeleteStatus(Status.SUCCESSFUL);
+      updateMerchantAlias.setStatus(Status.DELETION_SUCCESSFUL);
+    }
+    merchantAliasService.updateMerchantAlias(merchantAliasToUpdate, updateMerchantAlias);
     return createResponseDataForDeleteMerchantAliasResponse(response);
   }
 

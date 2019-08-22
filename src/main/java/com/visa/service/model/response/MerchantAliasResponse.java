@@ -46,6 +46,7 @@ public class MerchantAliasResponse {
   private String phone;
   private String createdAt;
   private String updatedAt;
+  private Status status;
 
   public static MerchantAliasResponse fromMerchantAlias(MerchantAlias merchantAlias) {
     return MerchantAliasResponse.builder()
@@ -72,6 +73,7 @@ public class MerchantAliasResponse {
         .phone(merchantAlias.getPhone())
         .createdAt(TimeUtil.getIsoTime(merchantAlias.getCreatedAt()))
         .updatedAt(TimeUtil.getIsoTime(merchantAlias.getUpdatedAt()))
+        .status(merchantAlias.getStatus())
         .build();
   }
 

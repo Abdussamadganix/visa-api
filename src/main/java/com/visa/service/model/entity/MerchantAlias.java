@@ -6,6 +6,8 @@ import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.PrePersist;
@@ -43,6 +45,7 @@ public class MerchantAlias {
   private String postalCode;
   private String email;
   private String phone;
+  private Status status;
 
 
   @Id
@@ -239,6 +242,7 @@ public class MerchantAlias {
 
   @Basic
   @Column(name = "create_status")
+  @Enumerated(EnumType.STRING)
   public Status getCreateStatus() {
     return createStatus;
   }
@@ -249,6 +253,7 @@ public class MerchantAlias {
 
   @Basic
   @Column(name = "update_status")
+  @Enumerated(EnumType.STRING)
   public Status getUpdateStatus() {
     return updateStatus;
   }
@@ -259,6 +264,7 @@ public class MerchantAlias {
 
   @Basic
   @Column(name = "delete_status")
+  @Enumerated(EnumType.STRING)
   public Status getDeleteStatus() {
     return deleteStatus;
   }
@@ -295,6 +301,17 @@ public class MerchantAlias {
 
   public void setPhone(String phone) {
     this.phone = phone;
+  }
+
+  @Basic
+  @Column(name = "status", nullable = true)
+  @Enumerated(EnumType.STRING)
+  public Status getStatus() {
+    return status;
+  }
+
+  public void setStatus(Status status) {
+    this.status = status;
   }
 
 }

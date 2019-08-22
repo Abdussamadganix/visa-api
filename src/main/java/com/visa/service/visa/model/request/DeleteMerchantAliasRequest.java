@@ -1,6 +1,7 @@
 package com.visa.service.visa.model.request;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.visa.service.model.entity.MerchantAlias;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,5 +20,13 @@ public class DeleteMerchantAliasRequest {
   private String aliasId;
   private String isAgentAlias;
   private String merchantId;
+
+  public MerchantAlias toMerchantAlias() {
+    MerchantAlias merchantAlias = new MerchantAlias();
+    merchantAlias.setAliasId(aliasId);
+    merchantAlias.setIsAgentAlias(isAgentAlias);
+    merchantAlias.setMerchantId(isAgentAlias);
+    return merchantAlias;
+  }
 
 }

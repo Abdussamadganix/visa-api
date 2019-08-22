@@ -26,3 +26,5 @@ CREATE TABLE `merchant_alias` (
   `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Last time log was updated',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+ALTER TABLE `merchant_alias` CHANGE COLUMN `status` `status` varchar(16) DEFAULT NULL;
