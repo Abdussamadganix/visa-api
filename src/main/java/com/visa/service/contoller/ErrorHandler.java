@@ -6,6 +6,7 @@ import com.visa.service.exception.ConflictException;
 import com.visa.service.exception.NotFoundException;
 import com.visa.service.exception.ProcessingException;
 import com.visa.service.model.constant.ErrorCode;
+import com.visa.service.model.constant.Status;
 import com.visa.service.model.response.ErrorResponse;
 import com.visa.service.util.LoggingUtil;
 import javax.servlet.http.HttpServletRequest;
@@ -33,6 +34,7 @@ public class ErrorHandler {
   public ResponseEntity<ErrorResponse> handleBadRequest(
       HttpServletRequest request, Exception e) {
     ErrorResponse response = ErrorResponse.builder()
+        .status(Status.FAILED)
         .error(ErrorCode.INPUT)
         .message(e.getMessage())
         .build();
@@ -44,6 +46,7 @@ public class ErrorHandler {
   public ResponseEntity<ErrorResponse> handleUnauthorized(
       HttpServletRequest request, AuthenticationException e) {
     ErrorResponse response = ErrorResponse.builder()
+        .status(Status.FAILED)
         .error(ErrorCode.PERMISSION)
         .message(e.getMessage())
         .build();
@@ -67,6 +70,7 @@ public class ErrorHandler {
   public ResponseEntity<ErrorResponse> handleConflict
       (HttpServletRequest request, ConflictException e) {
     ErrorResponse response = ErrorResponse.builder()
+        .status(Status.FAILED)
         .error(ErrorCode.INPUT)
         .message(e.getMessage())
         .build();
@@ -78,6 +82,7 @@ public class ErrorHandler {
   public ResponseEntity<ErrorResponse> handleProcessing
       (HttpServletRequest request, ProcessingException e) {
     ErrorResponse response = ErrorResponse.builder()
+        .status(Status.FAILED)
         .error(ErrorCode.PROCESSING)
         .message(e.getMessage())
         .build();
@@ -89,6 +94,7 @@ public class ErrorHandler {
   public ResponseEntity<ErrorResponse> handleNotFound
       (HttpServletRequest request, NotFoundException e) {
     ErrorResponse response = ErrorResponse.builder()
+        .status(Status.FAILED)
         .error(ErrorCode.NOT_FOUND)
         .message(e.getMessage())
         .build();
@@ -100,6 +106,7 @@ public class ErrorHandler {
   public ResponseEntity<ErrorResponse> handleInternalError
       (HttpServletRequest request, Exception e) {
     ErrorResponse response = ErrorResponse.builder()
+        .status(Status.FAILED)
         .error(ErrorCode.PROCESSING)
         .message(e.getMessage())
         .build();
