@@ -20,25 +20,9 @@ import com.visa.service.model.response.MerchantAliasResponse;
 import com.visa.service.model.response.SuccessResponse;
 import com.visa.service.util.SecurityUtil;
 import com.visa.service.visa.configuration.VisaConfiguration;
-import com.visa.service.visa.model.request.CreateAliasRequest;
-import com.visa.service.visa.model.request.CreateMerchantAliasRequest;
-import com.visa.service.visa.model.request.DeleteAliasRequest;
-import com.visa.service.visa.model.request.DeleteMerchantAliasRequest;
-import com.visa.service.visa.model.request.GetAliasRequest;
-import com.visa.service.visa.model.request.GetMerchantAliasRequest;
-import com.visa.service.visa.model.request.ReceiveMerchantPayment;
-import com.visa.service.visa.model.request.ResolveAliasRequest;
-import com.visa.service.visa.model.request.UpdateAliasRequest;
-import com.visa.service.visa.model.request.UpdateMerchantAliasRequest;
-import com.visa.service.visa.model.response.CreateAliasResponse;
-import com.visa.service.visa.model.response.CreateMerchantAliasResponse;
-import com.visa.service.visa.model.response.DeleteAliasResponse;
-import com.visa.service.visa.model.response.DeleteMerchantAliasResponse;
-import com.visa.service.visa.model.response.GetAliasResponse;
-import com.visa.service.visa.model.response.GetMerchantAliasResponse;
-import com.visa.service.visa.model.response.ResolveAliasResponse;
-import com.visa.service.visa.model.response.ResponseStatus;
-import com.visa.service.visa.model.response.UpdateMerchantAliasResponse;
+import com.visa.service.visa.model.constant.ActionCode;
+import com.visa.service.visa.model.request.*;
+import com.visa.service.visa.model.response.*;
 import com.visa.service.visa.service.ApiClient;
 import com.visa.service.visa.service.VisaHttpClient;
 import java.util.HashMap;
@@ -75,6 +59,9 @@ public class VisaService {
   private final String UPDATE_MERCHANT_ALIAS_PATH = "/visaaliasdirectory/v1/managemerchant/updatealias";
   private final String DELETE_MERCHANT_ALIAS_PATH = "/visaaliasdirectory/v1/managemerchant/deletealias";
   private final String GET_MERCHANT_ALIAS_PATH = "/visaaliasdirectory/v1/managemerchant";
+  private final String MERCHANTDISE_RETURN_PATH = "/visadirect/mvisa/v1/mr";
+  private final String CASH_IN_PATH = "/visadirect/mvisa/v1/cashinpushpayments";
+  private final String CASH_OUT_PATH = "/visadirect/mvisa/v1/cashoutpushpayments";
 
   private final Logger LOGGER = LoggerFactory.getLogger(VisaService.class);
   private static final org.slf4j.Logger logger = LoggerFactory.getLogger(VisaService.class);
@@ -216,6 +203,20 @@ public class VisaService {
     return createResponseDataForGetMerchantAliasResponse(response);
   }
 
+  public SuccessResponse refundTransaction(MerchandiseReturnRequest merchandiseReturnRequest) {
+    MerchandiseReturnTransactionResponse response = visaHttpClient.post(configuration.getBaseUrl() + MERCHANTDISE_RETURN_PATH, merchandiseReturnRequest, MerchandiseReturnTransactionResponse.class, getHeaders());
+    return createResponseDataForRefundResponse(response);
+  }
+
+  public SuccessResponse requestCashIn(CashInRequest cashInRequest) {
+    CashInResponse response = visaHttpClient.post(configuration.getBaseUrl() + CASH_IN_PATH, cashInRequest, CashInResponse.class, getHeaders());
+    return createResponseDataForCashIn(response);
+  }
+
+  public SuccessResponse requestCashOut(CashOutRequest cashOutRequest) {
+    CashOutResponse response = visaHttpClient.post(configuration.getBaseUrl() + CASH_OUT_PATH, cashOutRequest, CashOutResponse.class, getHeaders());
+    return createResponseDataForCashOut(response);
+  }
 
   public void updateTransactionUsingCallbackNotitification(
       ReceiveMerchantPayment receiveMerchantPayment) {
@@ -344,6 +345,54 @@ public class VisaService {
     headers.put("Authorization", "Basic " + SecurityUtil
         .base64Converter(configuration.getUsername() + ":" + configuration.getPassword()));
     return headers;
+  }
+
+  private SuccessResponse createResponseDataForRefundResponse(
+          MerchandiseReturnTransactionResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    if (response.getResponseStatus() != null || response.getMessage() != null || response.getErrorMessage() != null) {
+      return buildFailedResponseData(data, "refund", response.getResponseStatus(), response.getMessage(), response.getReason(), response.getErrorMessage());
+    }
+    data.put("refund", response);
+    return buildSuccessResponse(data);
+  }
+
+  private SuccessResponse createResponseDataForCashIn(
+          CashInResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    if (response.getResponseStatus() != null || response.getMessage() != null || response.getErrorMessage() != null) {
+      return buildFailedResponseData(data, "cashIn", response.getResponseStatus(), response.getMessage(), response.getReason(), response.getErrorMessage());
+    }
+    response.setStatus(response.getActionCode());
+    response.setStatusMessage(ActionCode.getActionCodeMessage(response.getActionCode()));
+    data.put("cashIn", response);
+    return buildSuccessResponse(data);
+  }
+
+  private SuccessResponse createResponseDataForCashOut(
+          CashOutResponse response) {
+    Map<String, Object> data = new HashMap<>();
+    if (response.getResponseStatus() != null || response.getMessage() != null || response.getErrorMessage() != null) {
+      return buildFailedResponseData(data, "cashIn", response.getResponseStatus(), response.getMessage(), response.getReason(), response.getErrorMessage());
+    }
+    response.setStatus(response.getActionCode());
+    response.setStatusMessage(ActionCode.getActionCodeMessage(response.getActionCode()));
+    data.put("cashOut", response);
+    return buildSuccessResponse(data);
+  }
+
+
+  private SuccessResponse buildFailedResponseData(Map<String, Object> data, String key, ResponseStatus responseStatus, String message, String reason, String errorMessage) {
+    if ((errorMessage != null)) {
+      data.put(key, FailedResponse.fromErrorMessage(errorMessage));
+    } else {
+      data.put(key, (responseStatus != null)
+              ? FailedResponse.fromResponseStatus(responseStatus.getMessage(),
+              responseStatus.getReason())
+              : FailedResponse.fromResponseStatus(message, reason));
+    }
+    return buildFailedResponse(data);
+
   }
 
 

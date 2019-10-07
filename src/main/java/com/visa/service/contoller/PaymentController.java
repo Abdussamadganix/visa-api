@@ -10,8 +10,13 @@ import com.visa.service.model.response.SuccessResponse;
 import com.visa.service.model.response.VisaApiResponse;
 import com.visa.service.service.PaymentService;
 import com.visa.service.service.facade.AccountFacade;
+import com.visa.service.service.facade.PaymentFacade;
 import com.visa.service.validator.InputValidator;
 import javax.validation.Valid;
+
+import com.visa.service.visa.model.request.CashInRequest;
+import com.visa.service.visa.model.request.CashOutRequest;
+import com.visa.service.visa.model.request.MerchandiseReturnRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,11 +39,13 @@ public class PaymentController {
 
   private PaymentService paymentService;
   private AccountFacade accountFacade;
+  private PaymentFacade paymentFacade;
 
   @Autowired
-  public PaymentController(PaymentService paymentService, AccountFacade accountFacade) {
+  public PaymentController(PaymentService paymentService, AccountFacade accountFacade, PaymentFacade paymentFacade) {
     this.paymentService = paymentService;
     this.accountFacade = accountFacade;
+    this.paymentFacade = paymentFacade;
   }
 
   @RequestMapping(method = RequestMethod.POST, produces = "application/json")
@@ -67,5 +74,33 @@ public class PaymentController {
     SuccessResponse response = accountFacade.getPayments(authenticatedUser, paymentSearchRequest);
     return new ResponseEntity<>(response, HttpStatus.OK);
   }
+
+  @RequestMapping(path = "/cashin", method = RequestMethod.POST, produces = "application/json")
+  public ResponseEntity<VisaApiResponse> cashIn(
+          @Valid @RequestBody CashInRequest cashInRequest,
+          BindingResult bindingResult) throws VisaApiException {
+    InputValidator.validate(bindingResult);
+    SuccessResponse response = paymentFacade.requestCashIn(cashInRequest);
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/cashout", method = RequestMethod.POST, produces = "application/json")
+  public ResponseEntity<VisaApiResponse> cashIn(
+          @Valid @RequestBody CashOutRequest cashOutRequest,
+          BindingResult bindingResult) throws VisaApiException {
+    InputValidator.validate(bindingResult);
+    SuccessResponse response = paymentFacade.requestCashOut(cashOutRequest);
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
+  @RequestMapping(path = "/refund", method = RequestMethod.POST, produces = "application/json")
+  public ResponseEntity<VisaApiResponse> cashIn(
+          @Valid @RequestBody MerchandiseReturnRequest merchandiseReturnRequest,
+          BindingResult bindingResult) throws VisaApiException {
+    InputValidator.validate(bindingResult);
+    SuccessResponse response = paymentFacade.requestRefund(merchandiseReturnRequest);
+    return new ResponseEntity<>(response, HttpStatus.OK);
+  }
+
 
 }

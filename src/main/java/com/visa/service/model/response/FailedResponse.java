@@ -27,4 +27,10 @@ public class FailedResponse {
         .build();
   }
 
+    public static FailedResponse fromErrorMessage(String errorMessage) {
+        return FailedResponse.builder()
+                .message(errorMessage)
+                .build();
+    }
+
 }
